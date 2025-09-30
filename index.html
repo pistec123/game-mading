@@ -7,15 +7,15 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Splash Screen untuk Input Nama -->
+  <!-- Splash Screen -->
   <div id="splashScreen">
     <h1>Game Mading</h1>
     <p>Masukkan nama kamu untuk mulai bermain:</p>
     <input type="text" id="playerName" placeholder="Nama kamu">
-    <button onclick="startGame()">Mulai</button>
+    <button id="startBtn">Mulai</button>
   </div>
 
-  <!-- Game Section -->
+  <!-- Game -->
   <div id="game" style="display:none;">
     <h2 id="welcome"></h2>
     <div id="timer">Waktu: 0s</div>
@@ -30,6 +30,10 @@
     <ol id="leaderboardList"></ol>
   </div>
 
+  <!-- Script di akhir body -->
   <script src="script.js"></script>
+  <script>
+    document.getElementById("startBtn").addEventListener("click", startGame);
+  </script>
 </body>
 </html>
