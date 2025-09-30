@@ -47,8 +47,9 @@ body {
   display: none;
   flex-direction: column;
   align-items: center;
-  width: 95%;
-  max-width: 500px;
+  width: 100%;
+  max-width: 600px;
+  padding: 10px;
 }
 
 #timer {
@@ -63,17 +64,18 @@ body {
   gap: 3px;
   margin: 15px 0;
   width: 100%;
+  max-width: 95vmin;  /* mengikuti ukuran layar terkecil */
 }
 
 .cell {
-  aspect-ratio: 1 / 1; /* bikin kotak selalu persegi */
+  aspect-ratio: 1 / 1;
   background: white;
   border: 1px solid #ccc;
   display: flex;
   justify-content: center;
   align-items: center;
   font-weight: bold;
-  font-size: clamp(12px, 3vw, 20px);
+  font-size: clamp(10px, 3vw, 24px); /* otomatis menyesuaikan */
   border-radius: 4px;
   cursor: pointer;
   user-select: none;
@@ -102,6 +104,7 @@ body {
   background: white;
   border-radius: 6px;
   border: 1px solid #ccc;
+  font-size: clamp(12px, 2.5vw, 16px);
 }
 
 #words span.done {
@@ -128,4 +131,14 @@ body {
 #leaderboard ol {
   padding-left: 20px;
   margin: 0;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 480px) {
+  #timer {
+    font-size: 16px;
+  }
+  #leaderboard {
+    font-size: 14px;
+  }
 }
