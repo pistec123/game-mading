@@ -1,4 +1,4 @@
-// ================== KONFIGURASI ==================
+// =================== KONFIGURASI ==================
 const API_URL = "https://script.google.com/macros/s/AKfycbx1opSTjHcfs6D1YNoRCpsFyRxEg2HVLU4Tqk0qT-cfsPrt0MzwF_9CKiFoXTTnnZzekQ/exec"; // ganti dengan Web App kamu
 const words = ["ALAM", "BUDAYA", "BANGSA", "POHON", "TARI"];
 const size = 10;
