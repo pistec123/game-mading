@@ -9,10 +9,7 @@ let timerInterval;
 
 // arah horizontal & vertikal
 const directions = [
-  [1, 0],  // bawah
-  [-1, 0], // atas
-  [0, 1],  // kanan
-  [0, -1], // kiri
+  [1, 0], [-1, 0], [0, 1], [0, -1]
 ];
 
 // ==== TIMER ====
@@ -27,7 +24,6 @@ function startTimer() {
 function stopTimer() {
   clearInterval(timerInterval);
 
-  // simpan ke leaderboard
   let leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
   leaderboard.push({ name: player, time });
   leaderboard.sort((a, b) => a.time - b.time);
@@ -49,7 +45,7 @@ function renderLeaderboard() {
   });
 }
 
-// ==== GAME ====
+// ==== START GAME ====
 function startGame() {
   const nameInput = document.getElementById("playerName").value.trim();
   if (!nameInput) {
@@ -58,9 +54,9 @@ function startGame() {
   }
   player = nameInput;
 
-  // tampilkan game
-  document.getElementById("startScreen").style.display = "none";
+  document.getElementById("splashScreen").style.display = "none";
   document.getElementById("gameScreen").style.display = "block";
+  document.getElementById("playerDisplay").innerText = "👤 Pemain: " + player;
 
   generateGrid();
   renderLeaderboard();
@@ -69,15 +65,12 @@ function startGame() {
 
 // buat grid huruf
 function generateGrid() {
-  // kosongkan
   grid = Array(size).fill(null).map(() => Array(size).fill(""));
   foundWords = [];
   selectedCells = [];
 
-  // taruh kata
   words.forEach(word => placeWord(word));
 
-  // isi acak
   for (let r = 0; r < size; r++) {
     for (let c = 0; c < size; c++) {
       if (grid[r][c] === "") {
@@ -86,7 +79,6 @@ function generateGrid() {
     }
   }
 
-  // render grid
   const gridEl = document.getElementById("grid");
   gridEl.innerHTML = "";
   gridEl.style.gridTemplateColumns = `repeat(${size}, 1fr)`;
@@ -100,7 +92,6 @@ function generateGrid() {
     gridEl.appendChild(cell);
   });
 
-  // render kata
   const wordsEl = document.getElementById("words");
   wordsEl.innerHTML = "";
   words.forEach(word => {
@@ -125,7 +116,7 @@ function selectCell(cell) {
   checkWord();
 }
 
-// cek apakah membentuk kata
+// cek kata
 function checkWord() {
   let str = selectedCells.map(c => c.textContent).join("");
   let reversed = str.split("").reverse().join("");
@@ -148,7 +139,7 @@ function checkWord() {
   }
 }
 
-// fungsi taruh kata di grid
+// tempatkan kata
 function placeWord(word) {
   let placed = false;
   while (!placed) {
