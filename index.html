@@ -3,92 +3,291 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Teka-Teki Kata</title>
+  <title>Game Word Search - Bulan Bahasa SMK Negeri Bansari</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
+      font-family: 'Arial', sans-serif;
       text-align: center;
-      background: #f4f4f9;
+      background: #f0f4f8;
       margin: 0;
-      padding: 0;
-    }
-    #splash, #game {
       padding: 20px;
     }
-    #splash {
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
+
+    h1 {
+      color: #2d6a4f;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
     }
-    input, button {
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 16px;
+
+    p {
+      font-size: 1.2rem;
+      color: #3a3a3a;
     }
+
     #grid {
       display: grid;
-      gap: 5px;
-      margin: 20px auto;
-      max-width: 400px;
-    }
-    .cell {
-      background: white;
-      border: 1px solid #ccc;
-      padding: 15px;
-      cursor: pointer;
-      font-weight: bold;
-      font-size: 18px;
-      user-select: none;
-    }
-    .cell.selected {
-      background: yellow;
-    }
-    .cell.found {
-      background: lightgreen;
-    }
-    #words span {
-      display: inline-block;
-      margin: 5px;
-      padding: 5px 10px;
-      border-radius: 5px;
-      background: #eee;
-    }
-    #words span.done {
-      text-decoration: line-through;
-      background: lightgreen;
-    }
-    #leaderboard {
+      grid-template-columns: repeat(12, 40px);
+      grid-gap: 5px;
+      justify-content: center;
       margin-top: 20px;
-      text-align: left;
-      display: inline-block;
+      margin-bottom: 30px;
+    }
+
+    .cell {
+      width: 40px;
+      height: 40px;
       background: #fff;
-      padding: 15px;
-      border-radius: 10px;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      border: 1px solid #d1d5db;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 18px;
+      transition: background-color 0.3s;
+    }
+
+    .cell.selected {
+      background: #2d6a4f;
+      color: #fff;
+    }
+
+    .cell.found {
+      background: #4ade80;
+      color: #fff;
+    }
+
+    #words {
+      margin-top: 15px;
+      font-size: 1.1rem;
+      font-weight: bold;
+      color: #2d6a4f;
+    }
+
+    #timer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      margin-top: 10px;
+      color: #2563eb;
+    }
+
+    #leaderboard {
+      margin-top: 40px;
+      background: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      max-width: 400px;
+      margin: 20px auto;
+    }
+
+    #leaderboard h2 {
+      font-size: 1.5rem;
+      color: #2563eb;
+      margin-bottom: 15px;
+    }
+
+    #leaderboard ol {
+      list-style-type: decimal;
+      padding-left: 20px;
+    }
+
+    #leaderboard ol li {
+      font-size: 1.1rem;
+      color: #333;
+    }
+
+    .done {
+      text-decoration: line-through;
+      color: #16a34a;
+    }
+
+    @media (max-width: 600px) {
+      #grid {
+        grid-template-columns: repeat(8, 40px);
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      p {
+        font-size: 1rem;
+      }
     }
   </style>
 </head>
 <body>
+  <h1>Word Search 🌱</h1>
+  <p>Cari kata bertema: Alam, Budaya, Bangsa</p>
+  <div id="timer">⏱️ Waktu: 0 detik</div>
+  <div id="grid"></div>
+  <div id="words"></div>
 
-  <!-- Splash screen -->
-  <div id="splash">
-    <h1>🔤 Game Teka-Teki Kata</h1>
-    <p>Masukkan nama kamu untuk mulai</p>
-    <input type="text" id="playerName" placeholder="Nama kamu">
-    <button id="startBtn">Mulai</button>
+  <div id="leaderboard">
+    <h2>🏆 Leaderboard</h2>
+    <ol id="scores"></ol>
   </div>
 
-  <!-- Game screen -->
-  <div id="game" style="display:none;">
-    <h2 id="timer">⏱️ Waktu: 0 detik</h2>
-    <div id="grid"></div>
-    <h3>Daftar Kata</h3>
-    <div id="words"></div>
-    <div id="leaderboard"></div>
-  </div>
+  <script>
+    const words = ["ALAM", "BUDAYA", "BANGSA", "BAHASA", "TEMANGGUNG", "POHON", "TARI", "SASTRA"];
+    const size = 12;
+    const grid = Array(size).fill().map(() => Array(size).fill(""));
 
-  <script src="script.js"></script>
+    const directions = [
+      [0, 1], [1, 0], [0, -1], [-1, 0], // horizontal & vertical
+      [1, 1], [1, -1], [-1, 1], [-1, -1] // diagonal
+    ];
+
+    function placeWord(word) {
+      let placed = false;
+      while (!placed) {
+        let dir = directions[Math.floor(Math.random() * directions.length)];
+        let row = Math.floor(Math.random() * size);
+        let col = Math.floor(Math.random() * size);
+
+        let r = row, c = col;
+        let fits = true;
+        for (let i = 0; i < word.length; i++) {
+          if (r < 0 || c < 0 || r >= size || c >= size) { fits = false; break; }
+          if (grid[r][c] != "" && grid[r][c] != word[i]) { fits = false; break; }
+          r += dir[0]; c += dir[1];
+        }
+        if (!fits) continue;
+
+        r = row; c = col;
+        for (let i = 0; i < word.length; i++) {
+          grid[r][c] = word[i];
+          r += dir[0]; c += dir[1];
+        }
+        placed = true;
+      }
+    }
+
+    words.forEach(w => placeWord(w));
+
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    for (let r = 0; r < size; r++) {
+      for (let c = 0; c < size; c++) {
+        if (grid[r][c] == "") {
+          grid[r][c] = alphabet[Math.floor(Math.random() * alphabet.length)];
+        }
+      }
+    }
+
+    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbx1opSTjHcfs6D1YNoRCpsFyRxEg2HVLU4Tqk0qT-cfsPrt0MzwF_9CKiFoXTTnnZzekQ/exec";
+    const gridDiv = document.getElementById("grid");
+    const wordsDiv = document.getElementById("words");
+    const timerDiv = document.getElementById("timer");
+    const scoresList = document.getElementById("scores");
+
+    let selected = [];
+    let found = [];
+    let time = 0;
+    let timer;
+
+    words.forEach(w => {
+      const span = document.createElement("div");
+      span.innerText = w;
+      span.id = "word-" + w;
+      wordsDiv.appendChild(span);
+    });
+
+    grid.flat().forEach((letter, idx) => {
+      const cell = document.createElement("div");
+      cell.className = "cell";
+      cell.innerText = letter;
+      cell.dataset.index = idx;
+      cell.dataset.row = Math.floor(idx / size);
+      cell.dataset.col = idx % size;
+      cell.addEventListener("click", () => selectCell(cell));
+      gridDiv.appendChild(cell);
+    });
+
+    function startTimer() {
+      timer = setInterval(() => {
+        time++;
+        timerDiv.innerText = "⏱️ Waktu: " + time + " detik";
+      }, 1000);
+    }
+
+    startTimer();
+
+    function selectCell(cell) {
+      if (cell.classList.contains("found")) return;
+      if (cell.classList.contains("selected")) {
+        cell.classList.remove("selected");
+        selected = selected.filter(c => c !== cell);
+      } else {
+        cell.classList.add("selected");
+        selected.push(cell);
+      }
+      checkWord();
+    }
+
+    function checkWord() {
+      const letters = selected.map(c => c.innerText).join("");
+      const rev = letters.split("").reverse().join("");
+      if (words.includes(letters) || words.includes(rev)) {
+        selected.forEach(c => {
+          c.classList.remove("selected");
+          c.classList.add("found");
+        });
+        document.getElementById("word-" + (words.includes(letters) ? letters : rev)).classList.add("done");
+        found.push(letters);
+        selected = [];
+        if (found.length === words.length) {
+          clearInterval(timer);
+          setTimeout(() => finishGame(), 500);
+        }
+      }
+    }
+
+    function finishGame() {
+      let name = prompt("🎉 Semua kata ditemukan!\nMasukkan namamu untuk leaderboard:");
+      if (!name) name = "Anonim";
+      saveScoreToSheet(name, time)
+        .then(() => {
+          return fetchLeaderboard();
+        })
+        .then(() => {
+          alert("Skor disimpan! ⏱️ Waktumu: " + time + " detik");
+        })
+        .catch(err => {
+          console.error(err);
+          alert("Gagal menyimpan skor. Coba lagi ya.");
+        });
+    }
+
+    function saveScoreToSheet(name, score) {
+      const payload = { name, score: Number(score) };
+      return fetch(WEBAPP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      }).then(r => r.text());
+    }
+
+    function fetchLeaderboard() {
+      return fetch(WEBAPP_URL + "?t=" + Date.now())
+        .then(response => response.json())
+        .then(data => {
+          const sorted = (data || []).sort((a, b) => Number(a.score) - Number(b.score));
+          updateLeaderboard(sorted);
+        })
+        .catch(err => console.error("Gagal mengambil leaderboard:", err));
+    }
+
+    function updateLeaderboard(list) {
+      const leaderboard = document.getElementById("scores");
+      leaderboard.innerHTML = "";
+      list.forEach(entry => {
+        const li = document.createElement("li");
+        li.textContent = `${entry.name} - ${entry.score} detik`;
+        leaderboard.appendChild(li);
+      });
+    }
+
+    fetchLeaderboard();
+  </script>
 </body>
 </html>
