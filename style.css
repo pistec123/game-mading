@@ -1,0 +1,42 @@
+body {
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 20px;
+}
+
+.grid {
+  display: grid;
+  gap: 4px;
+  margin: 20px auto;
+  max-width: 90vw;
+}
+
+.cell {
+  border: 1px solid #333;
+  padding: 8px;
+  text-align: center;
+  cursor: pointer;
+  user-select: none;
+  font-weight: bold;
+}
+
+.cell.selected {
+  background: yellow;
+}
+
+.cell.found {
+  background: lightgreen;
+}
+
+#words span {
+  display: inline-block;
+  margin: 5px;
+  padding: 5px 10px;
+  border: 1px solid #333;
+  border-radius: 5px;
+}
+
+#words .done {
+  background: lightgreen;
+  text-decoration: line-through;
+}
