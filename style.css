@@ -1,8 +1,8 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  margin: 0;
-  background: #f4f4f9;
+  background: #f4f4f4;
+  margin: 20px;
 }
 
 #splashScreen {
@@ -13,49 +13,44 @@ body {
   height: 100vh;
 }
 
-#splashScreen input {
-  padding: 10px;
-  margin: 10px;
-  width: 70%;
-  max-width: 300px;
-}
-
-#splashScreen button {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-}
-
-#game {
-  padding: 20px;
-}
-
-#crossword {
+.grid {
   display: grid;
-  grid-template-columns: repeat(10, 1fr);
-  gap: 5px;
+  grid-gap: 4px;
   justify-content: center;
   margin: 20px auto;
-  max-width: 90%;
 }
 
 .cell {
   width: 30px;
   height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   border: 1px solid #333;
-  text-transform: uppercase;
-  text-align: center;
-  font-size: 16px;
+  background: #fff;
+  cursor: pointer;
+  user-select: none;
 }
 
-#leaderboard {
-  margin-top: 20px;
+.cell.selected {
+  background: #4caf50;
+  color: white;
 }
 
-@media (max-width: 600px) {
-  .cell {
-    width: 25px;
-    height: 25px;
-    font-size: 14px;
-  }
+.cell.found {
+  background: #2196f3;
+  color: white;
+}
+
+#words span {
+  display: inline-block;
+  margin: 5px;
+  padding: 3px 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+#words .done {
+  text-decoration: line-through;
+  color: gray;
 }
