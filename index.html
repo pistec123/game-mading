@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Game Word Search - Bulan Bahasa</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+    body { font-family: Arial, sans-serif; background:#f1f5f9; margin:0; padding:20px; text-align:center; }
+    h1 { color:#16a34a; }
+    #grid { display:grid; grid-gap:4px; justify-content:center; margin:20px auto; max-width:95vw; }
+    .cell {
+      width:32px; height:32px;
+      display:flex; align-items:center; justify-content:center;
+      background:#fff; border:1px solid #d1d5db;
+      cursor:pointer; user-select:none;
+      font-weight:bold;
+    }
+    .cell.selected { background:#2563eb; color:#fff; }
+    .cell.found { background:#4ade80; color:#fff; }
+    #words { margin-top:10px; font-size:16px; display:flex; flex-wrap:wrap; gap:10px; justify-content:center; }
+    #words span.done { text-decoration:line-through; color:#16a34a; }
+    #timer { margin-top:15px; font-size:18px; font-weight:bold; }
+    #leaderboard {
+      margin-top:25px; text-align:left; max-width:320px; margin-left:auto; margin-right:auto;
+      background:#fff; padding:10px; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1);
+    }
+    #leaderboard h2 { font-size:18px; margin:0 0 10px; color:#2563eb; text-align:center; }
+    #leaderboard ol { padding-left:20px; margin:0; }
+  </style>
+</head>
+<body>
+  <h1>Word Search 🌱</h1>
+  <p>Cari kata bertema: Alam, Budaya, Bangsa</p>
+  <div id="timer">⏱️ Waktu: 0 detik</div>
+  <div id="grid"></div>
+  <div id="words"></div>
+
+  <div id="leaderboard">
+    <h2>🏆 Leaderboard</h2>
+    <ol id="scores"></ol>
+  </div>
+
+<script>
+const words = ["ALAM","BUDAYA","BANGSA","POHON","TARI"];
+const size = 10;
+let grid = Array(size).fill(null).map(()=>Array(size).fill(""));
+let foundWords = [];
+let selectedCells = [];
+
+// hanya horizontal & vertikal
+const directions = [[1,0],[-1,0],[0,1],[0,-1]];
+
+// === TIMER ===
+let time = 0;
+let timerInterval=null;
+function startTimer() {
+  timerInterval = setInterval(()=>{
+    time++;
+    document.getElementById("timer").innerText="⏱️ Waktu: "+time+" detik";
+  },1000);
+}
+function stopTimer(){ clearInterval(timerInterval); }
+
+// === TEMPATKAN KATA ===
+function placeWord(word){
+  let placed=false;
+  while(!placed){
+    const dir=directions[Math.floor(Math.random()*directions.length)];
+    const row=Math.floor(Math.random()*size);
+    const col=Math.floor(Math.random()*size);
+    let r=row,c=col,fits=true;
+    for(let i=0;i<word.length;i++){
+      if(r<0||r>=size||c<0||c>=size||(grid[r][c]!=""&&grid[r][c]!=word[i])){
+        fits=false;break;
+      }
+      r+=dir[0]; c+=dir[1];
+    }
+    if(fits){
+      r=row;c=col;
+      for(let i=0;i<word.length;i++){
+        grid[r][c]=word[i];
+        r+=dir[0]; c+=dir[1];
+      }
+      placed=true;
+    }
+  }
+}
+words.forEach(w=>placeWord(w));
+
+// isi huruf acak
+for(let r=0;r<size;r++){
+  for(let c=0;c<size;c++){
+    if(grid[r][c]==""){
+      grid[r][c]=String.fromCharCode(65+Math.floor(Math.random()*26));
+    }
+  }
+}
+
+// render grid
+const gridEl=document.getElementById("grid");
+gridEl.style.gridTemplateColumns=`repeat(${size}, 1fr)`;
+grid.flat().forEach((letter,idx)=>{
+  const cell=document.createElement("div");
+  cell.className="cell";
+  cell.textContent=letter;
+  cell.dataset.index=idx;
+  cell.addEventListener("click",()=>selectCell(cell));
+  gridEl.appendChild(cell);
+});
+
+// render daftar kata
+const wordsEl=document.getElementById("words");
+words.forEach(w=>{
+  const span=document.createElement("span");
+  span.textContent=w;
+  span.id="word-"+w;
+  wordsEl.appendChild(span);
+});
+
+// pilih huruf
+function selectCell(cell){
+  if(cell.classList.contains("found")) return;
+  cell.classList.toggle("selected");
+  if(cell.classList.contains("selected")) selectedCells.push(cell);
+  else selectedCells=selectedCells.filter(c=>c!==cell);
+  checkWord();
+}
+
+// cek kata
+function checkWord(){
+  let str=selectedCells.map(c=>c.textContent).join("");
+  let rev=str.split("").reverse().join("");
+  for(let w of words){
+    if((str===w||rev===w)&&!foundWords.includes(w)){
+      foundWords.push(w);
+      document.getElementById("word-"+w).classList.add("done");
+      selectedCells.forEach(c=>{
+        c.classList.remove("selected");
+        c.classList.add("found");
+      });
+      selectedCells=[];
+      if(foundWords.length===words.length){
+        stopTimer();
+        setTimeout(()=>finishGame(),300);
+      }
+      break;
+    }
+  }
+}
+
+// === LEADERBOARD via Google Apps Script ===
+const WEBAPP_URL="https://script.google.com/macros/s/AKfycbx1opSTjHcfs6D1YNoRCpsFyRxEg2HVLU4Tqk0qT-cfsPrt0MzwF_9CKiFoXTTnnZzekQ/exec";
+
+function finishGame(){
+  let name=prompt("🎉 Semua kata ditemukan!\nMasukkan namamu:");
+  if(!name) name="Anonim";
+  saveScore(name,time).then(()=>{
+    fetchLeaderboard();
+    alert("Skor tersimpan! Waktu: "+time+" detik");
+  });
+}
+
+function saveScore(name,score){
+  return fetch(WEBAPP_URL,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({name,score})
+  }).then(r=>r.json());
+}
+
+function fetchLeaderboard(){
+  return fetch(WEBAPP_URL)
+    .then(r=>r.json())
+    .then(data=>{
+      const list=document.getElementById("scores");
+      list.innerHTML="";
+      data.forEach(entry=>{
+        const li=document.createElement("li");
+        li.textContent=`${entry.name} - ${entry.score} detik`;
+        list.appendChild(li);
+      });
+    });
+}
+
+// mulai timer & ambil leaderboard awal
+startTimer();
+fetchLeaderboard();
+</script>
+</body>
+</html>
