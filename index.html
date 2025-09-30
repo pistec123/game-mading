@@ -7,28 +7,29 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Splash Screen -->
+  <!-- Splash Screen untuk Input Nama -->
   <div id="splashScreen">
-    <h1>🎮 Game Mading</h1>
-    <p>Cari kata bertema Alam, Budaya, Bangsa</p>
-    <input type="text" id="playerName" placeholder="Masukkan Nama">
+    <h1>Game Mading</h1>
+    <p>Masukkan nama kamu untuk mulai bermain:</p>
+    <input type="text" id="playerName" placeholder="Nama kamu">
     <button onclick="startGame()">Mulai</button>
   </div>
 
-  <!-- Game Screen -->
-  <div id="gameScreen" style="display:none;">
-    <header>
-      <div id="timer">⏱️ Waktu: 0 detik</div>
-      <div id="playerDisplay"></div>
-    </header>
-
-    <div id="grid" class="grid"></div>
-    <div id="words"></div>
-
-    <h3>🏆 Leaderboard</h3>
-    <ol id="leaderboard"></ol>
+  <!-- Game Section -->
+  <div id="game" style="display:none;">
+    <h2 id="welcome"></h2>
+    <div id="timer">Waktu: 0s</div>
+    <div id="crossword"></div>
+    <button onclick="checkAnswer()">Cek Jawaban</button>
+    <div id="result"></div>
   </div>
 
-  <script src="game.js"></script>
+  <!-- Leaderboard -->
+  <div id="leaderboard" style="display:none;">
+    <h2>🏆 Leaderboard</h2>
+    <ol id="leaderboardList"></ol>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
