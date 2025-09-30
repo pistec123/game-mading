@@ -1,39 +1,65 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game Mading</title>
-  <link rel="stylesheet" href="style.css">
-</head>
 <body>
-  <!-- Splash Screen -->
-  <div id="splashScreen">
-    <h1>Game Mading</h1>
-    <p>Masukkan nama kamu untuk mulai bermain:</p>
+  <div id="startScreen">
+    <h2>📝 Masukkan Nama</h2>
     <input type="text" id="playerName" placeholder="Nama kamu">
-    <button id="startBtn">Mulai</button>
+    <button onclick="startGame()">Mulai Game</button>
   </div>
 
-  <!-- Game -->
-  <div id="game" style="display:none;">
-    <h2 id="welcome"></h2>
-    <div id="timer">Waktu: 0s</div>
-    <div id="crossword"></div>
-    <button onclick="checkAnswer()">Cek Jawaban</button>
-    <div id="result"></div>
+  <div id="gameScreen" style="display:none;">
+    <div id="timer">⏱️ Waktu: 0 detik</div>
+    <div id="grid" class="grid"></div>
+    <div id="words"></div>
+    <h3>🏆 Leaderboard</h3>
+    <ol id="leaderboard"></ol>
   </div>
 
-  <!-- Leaderboard -->
-  <div id="leaderboard" style="display:none;">
-    <h2>🏆 Leaderboard</h2>
-    <ol id="leaderboardList"></ol>
-  </div>
-
-  <!-- Script di akhir body -->
-  <script src="script.js"></script>
   <script>
-    document.getElementById("startBtn").addEventListener("click", startGame);
+    let player = "";
+    let time = 0;
+    let timerInterval;
+
+    function startGame() {
+      const nameInput = document.getElementById("playerName").value.trim();
+      if (!nameInput) {
+        alert("Nama harus diisi!");
+        return;
+      }
+      player = nameInput;
+
+      // tampilkan game
+      document.getElementById("startScreen").style.display = "none";
+      document.getElementById("gameScreen").style.display = "block";
+
+      // mulai timer
+      time = 0;
+      timerInterval = setInterval(() => {
+        time++;
+        document.getElementById("timer").innerText = "⏱️ Waktu: " + time + " detik";
+      }, 1000);
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+
+      // simpan ke leaderboard
+      let leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+      leaderboard.push({ name: player, time });
+      leaderboard.sort((a, b) => a.time - b.time);
+      leaderboard = leaderboard.slice(0, 10); // simpan 10 tercepat
+      localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+
+      renderLeaderboard();
+    }
+
+    function renderLeaderboard() {
+      let leaderboard = JSON.parse(localStorage.getItem("leaderboard") || "[]");
+      const list = document.getElementById("leaderboard");
+      list.innerHTML = "";
+      leaderboard.forEach(entry => {
+        const li = document.createElement("li");
+        li.textContent = `${entry.name} - ${entry.time} detik`;
+        list.appendChild(li);
+      });
+    }
   </script>
 </body>
-</html>
