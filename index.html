@@ -7,16 +7,21 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Input Nama -->
-  <div id="startScreen">
-    <h2>📝 Masukkan Nama</h2>
-    <input type="text" id="playerName" placeholder="Nama kamu">
-    <button onclick="startGame()">Mulai Game</button>
+  <!-- Splash Screen -->
+  <div id="splashScreen">
+    <h1>🎮 Game Mading</h1>
+    <p>Cari kata bertema Alam, Budaya, Bangsa</p>
+    <input type="text" id="playerName" placeholder="Masukkan Nama">
+    <button onclick="startGame()">Mulai</button>
   </div>
 
-  <!-- Game -->
+  <!-- Game Screen -->
   <div id="gameScreen" style="display:none;">
-    <div id="timer">⏱️ Waktu: 0 detik</div>
+    <header>
+      <div id="timer">⏱️ Waktu: 0 detik</div>
+      <div id="playerDisplay"></div>
+    </header>
+
     <div id="grid" class="grid"></div>
     <div id="words"></div>
 
