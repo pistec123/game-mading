@@ -1,7 +1,8 @@
 body {
   font-family: Arial, sans-serif;
   text-align: center;
-  margin: 20px;
+  margin: 0;
+  background: #f4f4f9;
 }
 
 #splashScreen {
@@ -13,45 +14,48 @@ body {
 }
 
 #splashScreen input {
-  margin: 10px 0;
-  padding: 8px;
-  font-size: 16px;
-  width: 200px;
+  padding: 10px;
+  margin: 10px;
+  width: 70%;
+  max-width: 300px;
 }
 
-.grid {
+#splashScreen button {
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+#game {
+  padding: 20px;
+}
+
+#crossword {
   display: grid;
-  gap: 4px;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 5px;
+  justify-content: center;
   margin: 20px auto;
-  max-width: 90vw;
+  max-width: 90%;
 }
 
 .cell {
+  width: 30px;
+  height: 30px;
   border: 1px solid #333;
-  padding: 8px;
+  text-transform: uppercase;
   text-align: center;
-  cursor: pointer;
-  user-select: none;
-  font-weight: bold;
+  font-size: 16px;
 }
 
-.cell.selected {
-  background: yellow;
+#leaderboard {
+  margin-top: 20px;
 }
 
-.cell.found {
-  background: lightgreen;
-}
-
-#words span {
-  display: inline-block;
-  margin: 5px;
-  padding: 5px 10px;
-  border: 1px solid #333;
-  border-radius: 5px;
-}
-
-#words .done {
-  background: lightgreen;
-  text-decoration: line-through;
+@media (max-width: 600px) {
+  .cell {
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
+  }
 }
