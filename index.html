@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game Word Search - Bulan Bahasa SMK Negeri Bansari</title>
+  <title>Word Search - Leaderboard</title>
   <style>
     body {
       font-family: 'Arial', sans-serif;
@@ -130,7 +130,7 @@
 
   <script>
     const words = ["ALAM", "BUDAYA", "BANGSA", "BAHASA", "TEMANGGUNG", "POHON", "TARI", "SASTRA"];
-    const size = 10;  // Ubah ukuran grid menjadi 10x10
+    const size = 10;  // Grid ukuran 10x10
     const grid = Array(size).fill().map(() => Array(size).fill(""));
 
     const directions = [
@@ -174,7 +174,8 @@
       }
     }
 
-    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbx1opSTjHcfs6D1YNoRCpsFyRxEg2HVLU4Tqk0qT-cfsPrt0MzwF_9CKiFoXTTnnZzekQ/exec";
+    const WEBAPP_URL = 'https://script.google.com/macros/s/AKfycbxLA5LzL62YSGS7AGxuSVJ6vNvR-JZ0i78JFgmKHaExVu2HvJBkw9CeWwLoThCrIrvh/exec';  // Ganti dengan URL aplikasi Anda
+
     const gridDiv = document.getElementById("grid");
     const wordsDiv = document.getElementById("words");
     const timerDiv = document.getElementById("timer");
@@ -254,28 +255,18 @@
         })
         .catch(err => {
           console.error(err);
-          alert("Skor disimpan!");
+          alert("Gagal menyimpan skor. Coba lagi ya.");
         });
     }
 
-  function saveScoreToSheet(name, score) {
-  const payload = { name: name, score: score };
-  fetch(WEBAPP_URL, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'  // Pastikan content-type adalah JSON
-    },
-    body: JSON.stringify(payload)  // Mengirim data dalam format JSON
-  })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data); // Periksa respons dari server
-  })
-  .catch(error => {
-    console.error("Error:", error);
-  });
-}
-
+    function saveScoreToSheet(name, score) {
+      const payload = { name: name, score: score };
+      return fetch(WEBAPP_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+    }
 
     function fetchLeaderboard() {
       return fetch(WEBAPP_URL + "?t=" + Date.now())
@@ -301,4 +292,3 @@
   </script>
 </body>
 </html>
-
