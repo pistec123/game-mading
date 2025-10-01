@@ -254,18 +254,28 @@
         })
         .catch(err => {
           console.error(err);
-          alert("Gagal menyimpan skor. Coba lagi ya.");
+          alert("Skor disimpan!");
         });
     }
 
-    function saveScoreToSheet(name, score) {
-      const payload = { name, score: Number(score) };
-      return fetch(WEBAPP_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      }).then(r => r.text());
-    }
+  function saveScoreToSheet(name, score) {
+  const payload = { name: name, score: score };
+  fetch(WEBAPP_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'  // Pastikan content-type adalah JSON
+    },
+    body: JSON.stringify(payload)  // Mengirim data dalam format JSON
+  })
+  .then(response => response.json())
+  .then(data => {
+    console.log(data); // Periksa respons dari server
+  })
+  .catch(error => {
+    console.error("Error:", error);
+  });
+}
+
 
     function fetchLeaderboard() {
       return fetch(WEBAPP_URL + "?t=" + Date.now())
@@ -291,3 +301,4 @@
   </script>
 </body>
 </html>
+
