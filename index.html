@@ -26,7 +26,7 @@
 
     #grid {
       display: grid;
-      grid-template-columns: repeat(12, 40px);
+      grid-template-columns: repeat(10, 40px);
       grid-gap: 5px;
       justify-content: center;
       margin-top: 20px;
@@ -130,7 +130,7 @@
 
   <script>
     const words = ["ALAM", "BUDAYA", "BANGSA", "BAHASA", "TEMANGGUNG", "POHON", "TARI", "SASTRA"];
-    const size = 12;
+    const size = 10;  // Ubah ukuran grid menjadi 10x10
     const grid = Array(size).fill().map(() => Array(size).fill(""));
 
     const directions = [
