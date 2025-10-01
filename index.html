@@ -26,7 +26,7 @@
 
     #grid {
       display: grid;
-      grid-template-columns: repeat(10, 10vw); /* Gunakan vw (viewport width) agar responsive */
+      grid-template-columns: repeat(10, 10vw); /* Menggunakan vw untuk responsivitas */
       grid-gap: 5px;
       justify-content: center;
       margin-top: 20px;
@@ -35,14 +35,14 @@
 
     .cell {
       width: 100%;
-      height: 10vw; /* Sesuaikan tinggi dengan lebar cell */
+      height: 10vw; /* Menggunakan tinggi berdasarkan vw untuk proporsi yang benar */
       background: #fff;
       border: 1px solid #d1d5db;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      font-size: 2rem; /* Ukuran font lebih kecil untuk responsivitas */
+      font-size: 2rem; /* Ukuran font yang sesuai */
       transition: background-color 0.3s;
     }
 
@@ -140,7 +140,7 @@
 
   <script>
     const words = ["ALAM", "BUDAYA", "BANGSA", "BAHASA", "TEMANGGUNG", "POHON", "TARI", "SASTRA"];
-    const size = 10;
+    const size = 10;  // Ubah ukuran grid menjadi 10x10
     const grid = Array(size).fill().map(() => Array(size).fill(""));
 
     const directions = [
